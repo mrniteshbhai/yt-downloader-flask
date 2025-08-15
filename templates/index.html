@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional YouTube Downloader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0f1f 0%, #1a1a2e 100%);
+            color: #e0e0ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(90, 70, 180, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(90, 70, 180, 0.05) 0%, transparent 20%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* Professional card design */
+        .card {
+            background: rgba(25, 25, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 40px 35px;
+            width: 100%;
+            box-shadow: 
+                0 12px 30px rgba(0, 0, 0, 0.25),
+                0 2px 15px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(90, 70, 180, 0.15);
+            overflow: hidden;
+        }
+
+        /* Card header */
+        .card-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(90, 70, 180, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6a42d8, #8a2be2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(106, 66, 216, 0.2);
+        }
+
+        .logo-icon i {
+            font-size: 28px;
+            color: white;
+        }
+
+        .card-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #f0f0ff;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .card-header p {
+            color: #a0a0c0;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        /* Input field */
+        .input-group {
+            position: relative;
+            margin-bottom: 28px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8a2be2;
+            font-size: 18px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 20px 16px 52px;
+            background: rgba(35, 35, 60, 0.6);
+            border: 1px solid rgba(90, 70, 180, 0.3);
+            border-radius: 10px;
+            color: #f0f0ff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #8a2be2;
+            background: rgba(35, 35, 60, 0.8);
+            box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.15);
+        }
+
+        .input-group input::placeholder {
+            color: #8a8aa8;
+            font-weight: 400;
+        }
+
+        /* Format options */
+        .options-section {
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+            color: #c0c0e0;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .section-title i {
+            color: #8a2be2;
+        }
+
+        .format-options {
+            display: flex;
+            gap: 12px;
+        }
+
+        .format-btn {
+            flex: 1;
+            padding: 14px 16px;
+            background: rgba(35, 35, 60, 0.6);
+            border: 1px solid rgba(90, 70, 180, 0.25);
+            border-radius: 10px;
+            color: #d0d0f0;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .format-btn.active {
+            background: rgba(106, 66, 216, 0.15);
+            border-color: rgba(138, 43, 226, 0.4);
+            color: #f0f0ff;
+            box-shadow: 0 4px 10px rgba(106, 66, 216, 0.1);
+        }
+
+        .format-btn:hover:not(.active) {
+            background: rgba(35, 35, 60, 0.8);
+            border-color: rgba(138, 43, 226, 0.3);
+        }
+
+        /* Quality dropdown */
+        .quality-select {
+            position: relative;
+            margin-bottom: 32px;
+        }
+
+        .quality-select select {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(35, 35, 60, 0.6);
+            border: 1px solid rgba(90, 70, 180, 0.3);
+            border-radius: 10px;
+            color: #f0f0ff;
+            font-size: 15px;
+            appearance: none;
+            outline: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .quality-select select:focus {
+            border-color: #8a2be2;
+            background: rgba(35, 35, 60, 0.8);
+            box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.15);
+        }
+
+        .quality-select i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8a2be2;
+            pointer-events: none;
+            font-size: 14px;
+        }
+
+        /* Download button */
+        .download-btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6a42d8, #8a2be2);
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(106, 66, 216, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(106, 66, 216, 0.4);
+        }
+
+        .download-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 4px 15px rgba(106, 66, 216, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #8a8aa8;
+            font-size: 14px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(90, 70, 180, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 5px;
+        }
+
+        .tech-item {
+            background: rgba(35, 35, 60, 0.6);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #c0c0e0;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .card {
+                padding: 30px 25px;
+            }
+            
+            .card-header h1 {
+                font-size: 24px;
+            }
+            
+            .format-options {
+                flex-direction: column;
+            }
+            
+            .logo-icon {
+                width: 54px;
+                height: 54px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                </div>
+                <h1>YouTube Downloader</h1>
+                <p>Download videos and audio in your preferred format and quality</p>
+            </div>
+            
+            <div class="input-group">
+                <i class="fab fa-youtube"></i>
+                <input type="text" id="video-url" placeholder="Paste YouTube video URL here">
+            </div>
+            
+            <div class="options-section">
+                <div class="section-title">
+                    <i class="fas fa-file-video"></i>
+                    <span>Download Format</span>
+                </div>
+                <div class="format-options">
+                    <div class="format-btn active" data-format="mp4">
+                        <i class="fas fa-video"></i> MP4 (Video)
+                    </div>
+                    <div class="format-btn" data-format="mp3">
+                        <i class="fas fa-music"></i> MP3 (Audio)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quality-select">
+                <div class="section-title">
+                    <i class="fas fa-hd"></i>
+                    <span>Video Quality</span>
+                </div>
+                <select id="quality">
+                    <option>Auto-detect quality</option>
+                    <option>144p (Low)</option>
+                    <option>360p (Standard)</option>
+                    <option>720p (HD)</option>
+                    <option>1080p (Full HD)</option>
+                    <option>4K (Ultra HD)</option>
+                </select>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            
+            <button class="download-btn" id="download-btn">
+                <i class="fas fa-download"></i>
+                <span>Download Video</span>
+            </button>
+            
+            <div class="footer">
+                <p>Devloped by</p>
+                <div class="tech-stack">
+                    <div class="tech-item">Python</div>
+                    <div class="tech-item">Niteshbhai</div>
+                    <div class="tech-item">Telegram @Mascov01</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Format button toggle
+            const formatButtons = document.querySelectorAll('.format-btn');
+            formatButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    formatButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update download button text
+                    const format = this.getAttribute('data-format');
+                    const downloadBtn = document.getElementById('download-btn');
+                    const span = downloadBtn.querySelector('span');
+                    span.textContent = format === 'mp4' ? 'Download Video' : 'Download Audio';
+                    
+                    // Update quality dropdown title
+                    const qualityTitle = document.querySelector('.quality-select .section-title span');
+                    qualityTitle.textContent = format === 'mp4' ? 'Video Quality' : 'Audio Quality';
+                    
+                    // Update quality options
+                    const qualitySelect = document.getElementById('quality');
+                    if (format === 'mp3') {
+                        qualitySelect.innerHTML = `
+                            <option>Auto-detect quality</option>
+                            <option>64 kbps</option>
+                            <option>128 kbps (Standard)</option>
+                            <option>192 kbps</option>
+                            <option>320 kbps (High Quality)</option>
+                        `;
+                    } else {
+                        qualitySelect.innerHTML = `
+                            <option>Auto-detect quality</option>
+                            <option>144p (Low)</option>
+                            <option>360p (Standard)</option>
+                            <option>720p (HD)</option>
+                            <option>1080p (Full HD)</option>
+                            <option>4K (Ultra HD)</option>
+                        `;
+                    }
+                });
+            });
+            
+            // Download button functionality with backend integration
+            const downloadBtn = document.getElementById('download-btn');
+            
+            downloadBtn.addEventListener('click', function() {
+                const videoUrl = document.getElementById('video-url').value.trim();
+                const activeBtn = document.querySelector('.format-btn.active');
+                const format = activeBtn ? activeBtn.getAttribute('data-format') : 'mp4';
+                const quality = document.getElementById('quality').value;
+                
+                if (!videoUrl) {
+                    // Show input error effect
+                    const inputGroup = document.querySelector('.input-group');
+                    inputGroup.style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        inputGroup.style.animation = '';
+                    }, 500);
+                    return;
+                }
+                
+                // Show loading state
+                const originalText = downloadBtn.innerHTML;
+                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                downloadBtn.disabled = true;
+                
+                // Build the download URL
+                const dlUrl = `/download?url=${encodeURIComponent(videoUrl)}&format=${encodeURIComponent(format)}&quality=${encodeURIComponent(quality)}`;
+                
+                // Add a small delay to allow the UI to update before redirecting
+                setTimeout(() => {
+                    // Redirect to the backend download endpoint
+                    window.location.href = dlUrl;
+                    
+                    // Reset the button after 5 seconds if the download doesn't start
+                    setTimeout(() => {
+                        downloadBtn.innerHTML = originalText;
+                        downloadBtn.disabled = false;
+                    }, 5000);
+                }, 100);
+            });
+            
+            // Add shake animation and spinner CSS
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    25% { transform: translateX(-8px); }
+                    75% { transform: translateX(8px); }
+                }
+                
+                .fa-spinner {
+                    animation: spin 1s linear infinite;
+                }
+                
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
